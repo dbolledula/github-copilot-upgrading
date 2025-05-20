@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install pip, setuptools, wheel
+      run: python -m pip install --upgrade pip setuptools wheel
+    - name: Install project (editable mode)
+      run: |
+        cd workshop/legacy
+        pip install -e .[test]
+    - name: Run tests
+      run: |
+        cd workshop/legacy
+        pytest guachi/tests --maxfail=1 --disable-warnings -v
